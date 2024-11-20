@@ -7,6 +7,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Service;
 import ru.otus.quiz.service.ObjectLoader;
 
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 
+@Service
 public class CsvObjectLoader implements ObjectLoader {
 
     private static final Logger log = LoggerFactory.getLogger(CsvObjectLoader.class);

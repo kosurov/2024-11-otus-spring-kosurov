@@ -1,5 +1,6 @@
 package ru.otus.quiz.service.impl;
 
+import org.springframework.stereotype.Service;
 import ru.otus.quiz.dao.AnswerDao;
 import ru.otus.quiz.dao.QuestionDao;
 import ru.otus.quiz.domain.Answer;
@@ -10,6 +11,7 @@ import ru.otus.quiz.service.QuestionService;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionDao questionDao;
