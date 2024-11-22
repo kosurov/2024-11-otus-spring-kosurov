@@ -7,7 +7,6 @@ public class Answer {
     private String answer;
 
     public Answer() {
-
     }
 
     public Answer(int id, int questionId, String answer) {

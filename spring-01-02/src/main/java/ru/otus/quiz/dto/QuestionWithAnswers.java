@@ -4,7 +4,6 @@ import ru.otus.quiz.domain.Answer;
 import ru.otus.quiz.domain.Question;
 
 import java.util.List;
-import java.util.StringJoiner;
 
 public class QuestionWithAnswers {
 
@@ -29,23 +28,5 @@ public class QuestionWithAnswers {
 
     public void setAnswers(List<Answer> answers) {
         this.answers = answers;
-    }
-
-    @Override
-    public String toString() {
-        String result = "";
-        if (this.question != null) {
-            result = result + "Question: " + question.getQuestion();
-        }
-        if (this.answers != null && !this.answers.isEmpty()) {
-            StringJoiner answersString = new StringJoiner("; ");
-            int answerNumber = 1;
-            for (Answer answer : answers) {
-                answersString.add(answerNumber +". " + answer.getAnswer());
-                answerNumber++;
-            }
-            result = result + " Answers: " + answersString;
-        }
-        return result;
     }
 }

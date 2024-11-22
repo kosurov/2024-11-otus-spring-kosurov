@@ -25,7 +25,7 @@ class QuestionServiceImplTest {
         Answer answer2 = new Answer(2, 1, "answer2");
         Answer answer3 = new Answer(3, 1, "answer3");
 
-        Question question1 = new Question(1, "question1");
+        Question question1 = new Question(1, "question1", 1);
 
         Mockito.when(answerDaoMock.findAllByQuestionId(question1.getId()))
                 .thenReturn(List.of(answer1, answer2, answer3));
@@ -44,7 +44,7 @@ class QuestionServiceImplTest {
         QuestionDao questionDaoMock = Mockito.mock(QuestionDao.class);
         QuestionServiceImpl questionService = new QuestionServiceImpl(questionDaoMock, answerDaoMock);
 
-        Question question1 = new Question(1, "question1");
+        Question question1 = new Question(1, "question1", 1);
 
         Mockito.when(answerDaoMock.findAllByQuestionId(question1.getId()))
                 .thenReturn(Collections.emptyList());
