@@ -38,8 +38,7 @@ class QuizServiceImplTest {
         when(consoleTester.askForReadiness()).thenReturn(true);
         when(questionService.getQuestionsWithAnswers()).thenReturn(Collections.singletonList(questionWithAnswers));
         when(consoleTester.ask(eq(question.getQuestion()), Mockito.any())).thenReturn(answer1.getAnswer());
-        when(consoleTester.getQuestionCount()).thenReturn(1);
-        when(consoleTester.getCorrectAnswersCount()).thenReturn(1);
+        when(consoleTester.getCorrectAnswersPercent()).thenReturn(100);
 
         quizService.start();
 
@@ -66,8 +65,7 @@ class QuizServiceImplTest {
         when(consoleTester.askForReadiness()).thenReturn(true);
         when(questionService.getQuestionsWithAnswers()).thenReturn(Collections.singletonList(questionWithAnswers));
         when(consoleTester.ask(eq(question.getQuestion()), Mockito.any())).thenReturn(answer2.getAnswer());
-        when(consoleTester.getQuestionCount()).thenReturn(1);
-        when(consoleTester.getCorrectAnswersCount()).thenReturn(0);
+        when(consoleTester.getCorrectAnswersPercent()).thenReturn(0);
 
         quizService.start();
 

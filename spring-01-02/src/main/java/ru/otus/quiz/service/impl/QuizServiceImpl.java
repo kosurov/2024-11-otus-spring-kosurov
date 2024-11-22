@@ -62,9 +62,7 @@ public class QuizServiceImpl implements QuizService {
     }
 
     private void processResult() {
-        int correctAnswersCount = consoleTester.getCorrectAnswersCount();
-        int questionsCount = consoleTester.getQuestionCount();
-        int correctAnswersPercent = getCorrectAnswersPercent(correctAnswersCount, questionsCount);
+        int correctAnswersPercent = consoleTester.getCorrectAnswersPercent();
         if (correctAnswersPercent < correctAnswersPercentToPass) {
             consoleTester.printFaultResult();
         } else {
@@ -94,9 +92,5 @@ public class QuizServiceImpl implements QuizService {
         if (correctAnswer.equalsIgnoreCase(userAnswer)) {
             consoleTester.incrementRightAnswersCount();
         }
-    }
-
-    private int getCorrectAnswersPercent(int correctAnswersCount, int questionsCount) {
-        return correctAnswersCount * 100 / questionsCount;
     }
 }

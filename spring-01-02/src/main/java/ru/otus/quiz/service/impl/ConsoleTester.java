@@ -50,12 +50,8 @@ public class ConsoleTester implements Closeable {
         correctAnswers++;
     }
 
-    public int getCorrectAnswersCount() {
-        return correctAnswers;
-    }
-
-    public int getQuestionCount() {
-        return questionsCount;
+    public int getCorrectAnswersPercent() {
+        return correctAnswers * 100 / questionsCount;
     }
 
     public void printFaultResult() {
@@ -106,4 +102,5 @@ public class ConsoleTester implements Closeable {
     private void printStatistic() {
         System.out.println("You have " + correctAnswers + " out of " + questionsCount + " correct answers.");
     }
+
 }
