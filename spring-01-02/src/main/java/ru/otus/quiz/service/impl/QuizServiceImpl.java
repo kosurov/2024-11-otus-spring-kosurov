@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.otus.quiz.domain.Answer;
 import ru.otus.quiz.dto.QuestionWithAnswers;
-import ru.otus.quiz.service.ConsoleTesterFactory;
 import ru.otus.quiz.service.QuestionService;
 import ru.otus.quiz.service.QuizService;
 
@@ -15,30 +14,24 @@ import java.util.stream.Collectors;
 public class QuizServiceImpl implements QuizService {
 
     private final QuestionService questionService;
-    private final ConsoleTesterFactory consoleTesterFactory;
+    private final UserTester userTester;
     private final int correctAnswersPercentToPass;
-    private ConsoleTester consoleTester;
 
     public QuizServiceImpl(QuestionService questionService,
-                           ConsoleTesterFactory testerFactory,
+                           UserTester userTester,
                            @Value("${quiz.correct-answers-percent-to-pass:60}")
-                       int correctAnswersPercentToPass) {
+                           int correctAnswersPercentToPass) {
         this.questionService = questionService;
-        this.consoleTesterFactory = testerFactory;
+        this.userTester = userTester;
         this.correctAnswersPercentToPass = correctAnswersPercentToPass;
     }
 
     @Override
     public void start() {
-        try {
-            consoleTester = consoleTesterFactory.getTester();
-            consoleTester.greetUser();
-            boolean readyToStart = consoleTester.askForReadiness();
-            if (readyToStart) {
-                startTesting();
-            }
-        } finally {
-            consoleTester.close();
+        userTester.greetUser();
+        boolean readyToStart = userTester.askForReadiness();
+        if (readyToStart) {
+            startTesting();
         }
     }
 
@@ -57,16 +50,16 @@ public class QuizServiceImpl implements QuizService {
         String question = getQuestion(questionWithAnswers);
         List<String> answers = getAnswers(questionWithAnswers);
         String correctAnswer = getCorrectAnswer(questionWithAnswers);
-        String userAnswer = consoleTester.ask(question, answers);
+        String userAnswer = userTester.ask(question, answers);
         compareAnswers(correctAnswer, userAnswer);
     }
 
     private void processResult() {
-        int correctAnswersPercent = consoleTester.getCorrectAnswersPercent();
+        int correctAnswersPercent = userTester.getCorrectAnswersPercent();
         if (correctAnswersPercent < correctAnswersPercentToPass) {
-            consoleTester.printFaultResult();
+            userTester.printFaultResult();
         } else {
-            consoleTester.printSuccessResult();
+            userTester.printSuccessResult();
         }
     }
 
@@ -90,7 +83,7 @@ public class QuizServiceImpl implements QuizService {
 
     private void compareAnswers(String correctAnswer, String userAnswer) {
         if (correctAnswer.equalsIgnoreCase(userAnswer)) {
-            consoleTester.incrementRightAnswersCount();
+            userTester.incrementRightAnswersCount();
         }
     }
 }

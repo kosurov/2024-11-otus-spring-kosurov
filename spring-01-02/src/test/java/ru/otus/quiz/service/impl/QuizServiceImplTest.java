@@ -5,7 +5,6 @@ import org.mockito.Mockito;
 import ru.otus.quiz.domain.Answer;
 import ru.otus.quiz.domain.Question;
 import ru.otus.quiz.dto.QuestionWithAnswers;
-import ru.otus.quiz.service.ConsoleTesterFactory;
 import ru.otus.quiz.service.QuestionService;
 
 import java.util.Collections;
@@ -21,10 +20,9 @@ class QuizServiceImplTest {
 
     @Test
     void test_successResult() {
-        ConsoleTesterFactory testerFactory = mock(ConsoleTesterFactoryImpl.class);
-        ConsoleTester consoleTester = mock(ConsoleTester.class);
+        UserTester userTester = mock(UserTester.class);
         QuestionService questionService = mock(QuestionService.class);
-        QuizServiceImpl quizService = new QuizServiceImpl(questionService, testerFactory, 60);
+        QuizServiceImpl quizService = new QuizServiceImpl(questionService, userTester, 60);
 
         Answer answer1 = new Answer(1, 1, "answer1");
         Answer answer2 = new Answer(2, 1, "answer2");
@@ -34,24 +32,22 @@ class QuizServiceImplTest {
 
         QuestionWithAnswers questionWithAnswers = new QuestionWithAnswers(question, List.of(answer1, answer2, answer3));
 
-        when(testerFactory.getTester()).thenReturn(consoleTester);
-        when(consoleTester.askForReadiness()).thenReturn(true);
+        when(userTester.askForReadiness()).thenReturn(true);
         when(questionService.getQuestionsWithAnswers()).thenReturn(Collections.singletonList(questionWithAnswers));
-        when(consoleTester.ask(eq(question.getQuestion()), Mockito.any())).thenReturn(answer1.getAnswer());
-        when(consoleTester.getCorrectAnswersPercent()).thenReturn(100);
+        when(userTester.ask(eq(question.getQuestion()), Mockito.any())).thenReturn(answer1.getAnswer());
+        when(userTester.getCorrectAnswersPercent()).thenReturn(100);
 
         quizService.start();
 
-        verify(consoleTester).incrementRightAnswersCount();
-        verify(consoleTester).printSuccessResult();
+        verify(userTester).incrementRightAnswersCount();
+        verify(userTester).printSuccessResult();
     }
 
     @Test
     void test_faultResult() {
-        ConsoleTesterFactory testerFactory = mock(ConsoleTesterFactoryImpl.class);
-        ConsoleTester consoleTester = mock(ConsoleTester.class);
+        UserTester userTester = mock(UserTester.class);
         QuestionService questionService = mock(QuestionService.class);
-        QuizServiceImpl quizService = new QuizServiceImpl(questionService, testerFactory, 60);
+        QuizServiceImpl quizService = new QuizServiceImpl(questionService, userTester, 60);
 
         Answer answer1 = new Answer(1, 1, "answer1");
         Answer answer2 = new Answer(2, 1, "answer2");
@@ -61,15 +57,14 @@ class QuizServiceImplTest {
 
         QuestionWithAnswers questionWithAnswers = new QuestionWithAnswers(question, List.of(answer1, answer2, answer3));
 
-        when(testerFactory.getTester()).thenReturn(consoleTester);
-        when(consoleTester.askForReadiness()).thenReturn(true);
+        when(userTester.askForReadiness()).thenReturn(true);
         when(questionService.getQuestionsWithAnswers()).thenReturn(Collections.singletonList(questionWithAnswers));
-        when(consoleTester.ask(eq(question.getQuestion()), Mockito.any())).thenReturn(answer2.getAnswer());
-        when(consoleTester.getCorrectAnswersPercent()).thenReturn(0);
+        when(userTester.ask(eq(question.getQuestion()), Mockito.any())).thenReturn(answer2.getAnswer());
+        when(userTester.getCorrectAnswersPercent()).thenReturn(0);
 
         quizService.start();
 
-        verify(consoleTester, never()).incrementRightAnswersCount();
-        verify(consoleTester).printFaultResult();
+        verify(userTester, never()).incrementRightAnswersCount();
+        verify(userTester).printFaultResult();
     }
 }
