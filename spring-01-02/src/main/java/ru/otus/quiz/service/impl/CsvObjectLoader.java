@@ -27,7 +27,7 @@ public class CsvObjectLoader implements ObjectLoader {
             InputStream inputStream = new ClassPathResource(fileName).getInputStream();
             return readValues(objectReader, inputStream);
         } catch (Exception e) {
-            log.error("Error occurred wile loading object list from file {}", fileName, e);
+            log.error("Error occurred while loading object list from file {}", fileName, e);
             return Collections.emptyList();
         }
     }

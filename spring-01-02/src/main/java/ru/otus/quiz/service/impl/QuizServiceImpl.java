@@ -37,10 +37,18 @@ public class QuizServiceImpl implements QuizService {
 
     private void startTesting() {
         List<QuestionWithAnswers> questionsWithAnswers = questionService.getQuestionsWithAnswers();
+        if (questionsWithAnswers.isEmpty()) {
+            userTester.printInternalError("Question database is empty");
+            return;
+        }
+        testQuestions(questionsWithAnswers);
+        processResult();
+    }
+
+    private void testQuestions(List<QuestionWithAnswers> questionsWithAnswers) {
         for (QuestionWithAnswers questionWithAnswers : questionsWithAnswers) {
             testQuestion(questionWithAnswers);
         }
-        processResult();
     }
 
     private void testQuestion(QuestionWithAnswers questionWithAnswers) {
@@ -55,12 +63,16 @@ public class QuizServiceImpl implements QuizService {
     }
 
     private void processResult() {
-        int correctAnswersPercent = userTester.getCorrectAnswersPercent();
+        int correctAnswersPercent = getCorrectAnswersPercent();
         if (correctAnswersPercent < correctAnswersPercentToPass) {
             userTester.printFaultResult();
         } else {
             userTester.printSuccessResult();
         }
+    }
+
+    private int getCorrectAnswersPercent() {
+        return userTester.getCorrectAnswers() * 100 / userTester.getQuestionsCount();
     }
 
     private String getQuestion(QuestionWithAnswers questionWithAnswers) {

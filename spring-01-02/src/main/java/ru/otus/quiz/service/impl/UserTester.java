@@ -52,8 +52,12 @@ public class UserTester {
         correctAnswers++;
     }
 
-    public int getCorrectAnswersPercent() {
-        return correctAnswers * 100 / questionsCount;
+    public int getCorrectAnswers() {
+        return correctAnswers;
+    }
+
+    public int getQuestionsCount() {
+        return questionsCount;
     }
 
     public void printFaultResult() {
@@ -64,6 +68,10 @@ public class UserTester {
     public void printSuccessResult() {
         inputOutputService.out("Congratulations, " + username + "! You have successfully completed the quiz!");
         printStatistic();
+    }
+
+    public void printInternalError(String message) {
+        inputOutputService.out("Error occurred while running program: " + message);
     }
 
     private Map<Character, String> getAnswerOutput(List<String> answers) {
@@ -99,5 +107,4 @@ public class UserTester {
     private void printStatistic() {
         inputOutputService.out("You have " + correctAnswers + " out of " + questionsCount + " correct answers.");
     }
-
 }
