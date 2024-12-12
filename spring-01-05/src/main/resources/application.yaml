@@ -1,3 +1,8 @@
 spring:
   application:
     name: spring-01-05
+
+quiz:
+  questions: questions.csv
+  answers: answers.csv
+  correct-answers-percent-to-pass: 60
