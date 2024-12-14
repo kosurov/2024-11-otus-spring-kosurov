@@ -10,12 +10,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import ru.diasoft.otus.quiz.service.InputOutputService;
+import ru.diasoft.otus.quiz.service.MessageService;
 
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -28,6 +31,8 @@ class UserTesterTest {
     private UserTester userTester;
     @Mock
     private InputOutputService inputOutputService;
+    @Mock
+    private MessageService messageService;
     @Captor
     ArgumentCaptor<String> stringCaptor;
 
@@ -35,7 +40,10 @@ class UserTesterTest {
     @Test()
     void greetUser_askUserFirstName() {
         String expected = "Please enter your first name:";
+        when(messageService.getMessage(anyString())).thenReturn(expected);
+
         userTester.greetUser();
+
         verify(inputOutputService, atLeastOnce()).out(stringCaptor.capture());
         assertTrue(stringCaptor.getAllValues().stream().anyMatch(expected::equals));
     }
@@ -44,7 +52,10 @@ class UserTesterTest {
     @Test()
     void greetUser_askUserLastName() {
         String expected = "Please enter your last name:";
+        when(messageService.getMessage(anyString())).thenReturn(expected);
+
         userTester.greetUser();
+
         verify(inputOutputService, atLeastOnce()).out(stringCaptor.capture());
         assertTrue(stringCaptor.getAllValues().stream().anyMatch(expected::equals));
     }
@@ -53,7 +64,10 @@ class UserTesterTest {
     @Test()
     void greetUser_displaysWelcomeMessage() {
         String expected = "Welcome to Quiz Service 2000!";
+        when(messageService.getMessage(anyString())).thenReturn(expected);
+
         userTester.greetUser();
+
         verify(inputOutputService, atLeastOnce()).out(stringCaptor.capture());
         assertTrue(stringCaptor.getAllValues().stream().anyMatch(expected::equals));
     }
@@ -63,7 +77,10 @@ class UserTesterTest {
     void greetUser() {
         String expected = "Nice to meet you Ivan Ivanov!";
         when(inputOutputService.readString()).thenReturn("Ivan", "Ivanov");
+        when(messageService.getMessage(anyString())).thenReturn(expected);
+
         userTester.greetUser();
+
         verify(inputOutputService, atLeastOnce()).out(stringCaptor.capture());
         assertTrue(stringCaptor.getAllValues().stream().anyMatch(expected::equals));
     }
@@ -72,8 +89,13 @@ class UserTesterTest {
     @Test
     void askForReadiness() {
         String expected = "Are you ready to start the quiz? (yes/no)";
+        when(messageService.getMessage("out.yes")).thenReturn("yes");
+        when(messageService.getMessage("out.no")).thenReturn("no");
+        when(messageService.getMessage("out.ready.to.start")).thenReturn(expected);
         when(inputOutputService.readString()).thenReturn( "yes");
+
         userTester.askForReadiness();
+
         verify(inputOutputService, atLeastOnce()).out(stringCaptor.capture());
         assertTrue(stringCaptor.getAllValues().stream().anyMatch(expected::equals));
     }
@@ -83,7 +105,13 @@ class UserTesterTest {
     void askForReadiness_whenIncorrectInput_clarifyAnswerForReadiness() {
         String expected = "Please enter 'yes' or 'no'";
         when(inputOutputService.readString()).thenReturn("incorrect", "yes");
+        when(messageService.getMessage("out.yes")).thenReturn("yes");
+        when(messageService.getMessage("out.no")).thenReturn("no");
+        when(messageService.getMessage("out.ready.to.start")).thenReturn("string");
+        when(messageService.getMessage("out.yes.or.no")).thenReturn(expected);
+
         userTester.askForReadiness();
+
         verify(inputOutputService, atLeastOnce()).out(stringCaptor.capture());
         assertTrue(stringCaptor.getAllValues().stream().anyMatch(expected::equals));
     }
@@ -91,16 +119,26 @@ class UserTesterTest {
     @DisplayName("Возвращает true если пользователь готов")
     @Test
     void askForReadiness_whenUserIsReady_returnsTrue() {
+        when(messageService.getMessage("out.yes")).thenReturn("yes");
+        when(messageService.getMessage("out.no")).thenReturn("no");
+        when(messageService.getMessage("out.ready.to.start")).thenReturn("string");
         when(inputOutputService.readString()).thenReturn( "yes");
+
         boolean result = userTester.askForReadiness();
+
         assertTrue(result);
     }
 
     @DisplayName("Возвращает false если пользователь не готов")
     @Test
     void askForReadiness_whenUserIsNotReady_returnsFalse() {
+        when(messageService.getMessage("out.yes")).thenReturn("yes");
+        when(messageService.getMessage("out.no")).thenReturn("no");
+        when(messageService.getMessage("out.ready.to.start")).thenReturn("string");
         when(inputOutputService.readString()).thenReturn("no");
+
         boolean result = userTester.askForReadiness();
+
         assertFalse(result);
     }
 
@@ -118,7 +156,9 @@ class UserTesterTest {
     void ask_incrementQuestionsCount() {
         String expected = "question";
         int questionsCountBefore = userTester.getQuestionsCount();
+
         userTester.ask(expected, Collections.emptyList());
+
         int questionsCountAfter = userTester.getQuestionsCount();
         assertEquals( questionsCountBefore + 1, questionsCountAfter);
     }
@@ -161,7 +201,10 @@ class UserTesterTest {
     @Test
     void printFaultResult() {
         String expected = "The quiz has been failed, please try again later.";
+        when(messageService.getMessage(anyString(), any())).thenReturn(expected);
+
         userTester.printFaultResult();
+
         verify(inputOutputService, atLeastOnce()).out(stringCaptor.capture());
         assertTrue(stringCaptor.getAllValues().stream().anyMatch(s -> s.contains(expected)));
     }
@@ -170,7 +213,10 @@ class UserTesterTest {
     @Test
     void printSuccessResult() {
         String expected = "You have successfully completed the quiz!";
+        when(messageService.getMessage(anyString(), any())).thenReturn(expected);
+
         userTester.printSuccessResult();
+
         verify(inputOutputService, atLeastOnce()).out(stringCaptor.capture());
         assertTrue(stringCaptor.getAllValues().stream().anyMatch(s -> s.contains(expected)));
     }
@@ -178,9 +224,12 @@ class UserTesterTest {
     @DisplayName("Печатает внутреннюю ошибку сервиса")
     @Test
     void printInternalError() {
-        String message = "Error occurred while running program: ";
+        String message = "Error occurred while running program: " + "Error";
+        when(messageService.getMessage(anyString(), any())).thenReturn(message);
+
         userTester.printInternalError("Error");
+
         verify(inputOutputService, atLeastOnce()).out(stringCaptor.capture());
-        assertTrue(stringCaptor.getAllValues().stream().anyMatch(s -> s.equals(message + "Error")));
+        assertTrue(stringCaptor.getAllValues().stream().anyMatch(s -> s.equals(message)));
     }
 }

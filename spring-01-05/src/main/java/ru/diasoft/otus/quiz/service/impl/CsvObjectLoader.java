@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import ru.diasoft.otus.quiz.service.MessageService;
 import ru.diasoft.otus.quiz.service.ObjectLoader;
 
 import java.io.IOException;
@@ -19,6 +20,11 @@ import java.util.List;
 public class CsvObjectLoader implements ObjectLoader {
 
     private static final Logger log = LoggerFactory.getLogger(CsvObjectLoader.class);
+    private final MessageService messageService;
+
+    public CsvObjectLoader(MessageService messageService) {
+        this.messageService = messageService;
+    }
 
     @Override
     public <T> List<T> loadObjectList(Class<T> type, String fileName) {
@@ -27,7 +33,8 @@ public class CsvObjectLoader implements ObjectLoader {
             InputStream inputStream = new ClassPathResource(fileName).getInputStream();
             return readValues(objectReader, inputStream);
         } catch (Exception e) {
-            log.error("Error occurred while loading object list from file {}", fileName, e);
+            String error = messageService.getMessage("error.loading.object.list", fileName);
+            log.error(error, e);
             return Collections.emptyList();
         }
     }

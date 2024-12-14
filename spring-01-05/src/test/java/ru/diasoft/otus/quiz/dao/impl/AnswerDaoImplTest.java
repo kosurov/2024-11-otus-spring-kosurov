@@ -3,10 +3,12 @@ package ru.diasoft.otus.quiz.dao.impl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.diasoft.otus.quiz.domain.Answer;
 import ru.diasoft.otus.quiz.service.ObjectLoader;
+import ru.diasoft.otus.quiz.service.ResourceManager;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,14 +21,18 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class AnswerDaoImplTest {
 
+    @InjectMocks
+    AnswerDaoImpl answerDao;
     @Mock
     private ObjectLoader objectLoader;
+    @Mock
+    private ResourceManager resourceManager;
 
     @DisplayName("Возвращает пустой список если ответы не были загружены из файла")
     @Test
     void findAllByQuestionId_whenEmptyObjectList_shouldReturnEmptyList() {
         String resource = "resource.xml";
-        AnswerDaoImpl answerDao = new AnswerDaoImpl(objectLoader, resource);
+        when(resourceManager.getAnswers()).thenReturn(resource);
         when(objectLoader.loadObjectList(Answer.class, resource))
                 .thenReturn(Collections.emptyList());
 
@@ -38,13 +44,13 @@ class AnswerDaoImplTest {
     @Test
     void findAllByQuestionId_whenNotEmptyObjectList_shouldFilterResultByQuestionId() {
         String resource = "resource.xml";
-        AnswerDaoImpl answerDao = new AnswerDaoImpl(objectLoader, resource);
         int validQuestionId = 1;
         int invalidQuestionId = 2;
         Answer answer1 = new Answer(1, validQuestionId, "answer1");
         Answer answer2 = new Answer(2, validQuestionId, "answer2");
         Answer answer3 = new Answer(3, invalidQuestionId, "answer3");
 
+        when(resourceManager.getAnswers()).thenReturn(resource);
         when(objectLoader.loadObjectList(Answer.class, resource))
                 .thenReturn(List.of(answer1, answer2, answer3));
 

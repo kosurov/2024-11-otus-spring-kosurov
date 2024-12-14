@@ -1,10 +1,10 @@
 package ru.diasoft.otus.quiz.dao.impl;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.diasoft.otus.quiz.dao.QuestionDao;
 import ru.diasoft.otus.quiz.domain.Question;
 import ru.diasoft.otus.quiz.service.ObjectLoader;
+import ru.diasoft.otus.quiz.service.ResourceManager;
 
 import java.util.List;
 
@@ -12,15 +12,15 @@ import java.util.List;
 public class QuestionDaoImpl implements QuestionDao {
 
     private final ObjectLoader objectLoader;
-    private final String resource;
+    private final ResourceManager resourceManager;
 
-    public QuestionDaoImpl(ObjectLoader objectLoader, @Value("${quiz.questions}") String resource) {
+    public QuestionDaoImpl(ObjectLoader objectLoader, ResourceManager resourceManager) {
         this.objectLoader = objectLoader;
-        this.resource = resource;
+        this.resourceManager = resourceManager;
     }
 
     @Override
     public List<Question> findAll() {
-        return objectLoader.loadObjectList(Question.class, this.resource);
+        return objectLoader.loadObjectList(Question.class, resourceManager.getQuestions());
     }
 }

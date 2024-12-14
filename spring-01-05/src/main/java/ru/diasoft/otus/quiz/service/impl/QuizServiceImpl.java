@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.diasoft.otus.quiz.domain.Answer;
 import ru.diasoft.otus.quiz.dto.QuestionWithAnswers;
+import ru.diasoft.otus.quiz.service.MessageService;
 import ru.diasoft.otus.quiz.service.QuestionService;
 import ru.diasoft.otus.quiz.service.QuizService;
 
@@ -16,14 +17,17 @@ public class QuizServiceImpl implements QuizService {
     private final QuestionService questionService;
     private final UserTester userTester;
     private final int correctAnswersPercentToPass;
+    private final MessageService messageService;
 
     public QuizServiceImpl(QuestionService questionService,
                            UserTester userTester,
                            @Value("${quiz.correct-answers-percent-to-pass:60}")
-                           int correctAnswersPercentToPass) {
+                           int correctAnswersPercentToPass,
+                           MessageService messageService) {
         this.questionService = questionService;
         this.userTester = userTester;
         this.correctAnswersPercentToPass = correctAnswersPercentToPass;
+        this.messageService = messageService;
     }
 
     @Override
@@ -38,7 +42,7 @@ public class QuizServiceImpl implements QuizService {
     private void startTesting() {
         List<QuestionWithAnswers> questionsWithAnswers = questionService.getQuestionsWithAnswers();
         if (questionsWithAnswers.isEmpty()) {
-            userTester.printInternalError("Question database is empty");
+            userTester.printInternalError(messageService.getMessage("error.database.is.empty"));
             return;
         }
         testQuestions(questionsWithAnswers);

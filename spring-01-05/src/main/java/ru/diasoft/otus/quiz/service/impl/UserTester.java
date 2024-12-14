@@ -2,6 +2,7 @@ package ru.diasoft.otus.quiz.service.impl;
 
 import org.springframework.stereotype.Service;
 import ru.diasoft.otus.quiz.service.InputOutputService;
+import ru.diasoft.otus.quiz.service.MessageService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,32 +12,36 @@ import java.util.Map;
 public class UserTester {
 
     private final InputOutputService inputOutputService;
+    private final MessageService messageService;
     private String username;
     private int correctAnswers;
     private int questionsCount;
 
-    public UserTester(InputOutputService inputOutputService) {
+    public UserTester(InputOutputService inputOutputService, MessageService messageService) {
         this.inputOutputService = inputOutputService;
+        this.messageService = messageService;
     }
 
     public void greetUser() {
-        inputOutputService.out("Please enter your first name:");
+        inputOutputService.out(messageService.getMessage("out.first.name"));
         String firstName = inputOutputService.readString();
-        inputOutputService.out("Please enter your last name:");
+        inputOutputService.out(messageService.getMessage("out.last.name"));
         String lastName = inputOutputService.readString();
         username = firstName + " " + lastName;
-        inputOutputService.out("Nice to meet you " + username + "!");
-        inputOutputService.out("Welcome to Quiz Service 2000!");
+        inputOutputService.out(messageService.getMessage("out.nice.to.meet.you", username));
+        inputOutputService.out(messageService.getMessage("out.welcome"));
     }
 
     public boolean askForReadiness() {
-        inputOutputService.out("Are you ready to start the quiz? (yes/no)");
+        inputOutputService.out(messageService.getMessage("out.ready.to.start"));
+        String yes = messageService.getMessage("out.yes");
+        String no = messageService.getMessage("out.no");
         String answer = inputOutputService.readString();
-        while (!"yes".equals(answer) && !"no".equals(answer)) {
-            inputOutputService.out("Please enter 'yes' or 'no'");
+        while (!yes.equalsIgnoreCase(answer) && !no.equalsIgnoreCase(answer)) {
+            inputOutputService.out(messageService.getMessage("out.yes.or.no"));
             answer = inputOutputService.readString();
         }
-        return "yes".equals(answer);
+        return yes.equals(answer);
     }
 
     public String ask(String question, List<String> answers) {
@@ -61,17 +66,17 @@ public class UserTester {
     }
 
     public void printFaultResult() {
-        inputOutputService.out("Sorry, " + username + ". The quiz has been failed, please try again later.");
+        inputOutputService.out(messageService.getMessage("out.fault.result", username));
         printStatistic();
     }
 
     public void printSuccessResult() {
-        inputOutputService.out("Congratulations, " + username + "! You have successfully completed the quiz!");
+        inputOutputService.out(messageService.getMessage("out.success.result", username));
         printStatistic();
     }
 
     public void printInternalError(String message) {
-        inputOutputService.out("Error occurred while running program: " + message);
+        inputOutputService.out(messageService.getMessage("error.internal.running.program", message));
     }
 
     private Map<Character, String> getAnswerOutput(List<String> answers) {
@@ -105,6 +110,6 @@ public class UserTester {
     }
 
     private void printStatistic() {
-        inputOutputService.out("You have " + correctAnswers + " out of " + questionsCount + " correct answers.");
+        inputOutputService.out(messageService.getMessage("out.statistic", correctAnswers, questionsCount));
     }
 }

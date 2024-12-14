@@ -10,12 +10,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.diasoft.otus.quiz.domain.Answer;
 import ru.diasoft.otus.quiz.domain.Question;
 import ru.diasoft.otus.quiz.dto.QuestionWithAnswers;
+import ru.diasoft.otus.quiz.service.MessageService;
 import ru.diasoft.otus.quiz.service.QuestionService;
 
 import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -30,10 +32,12 @@ class QuizServiceImplTest {
     private UserTester userTester;
     @Mock
     private QuestionService questionService;
+    @Mock
+    private MessageService messageService;
 
     @BeforeEach
     void setUp() {
-        quizService = new QuizServiceImpl(questionService, userTester, 60);
+        quizService = new QuizServiceImpl(questionService, userTester, 60, messageService);
     }
 
     @DisplayName("Приветствует пользователя")
@@ -64,6 +68,7 @@ class QuizServiceImplTest {
     void start_whenEmptyQuestions_shouldPrintInternalError() {
         when(userTester.askForReadiness()).thenReturn(true);
         when(questionService.getQuestionsWithAnswers()).thenReturn(Collections.emptyList());
+        when(messageService.getMessage(anyString())).thenReturn("Question database is empty");
 
         quizService.start();
         verify(userTester).printInternalError("Question database is empty");
