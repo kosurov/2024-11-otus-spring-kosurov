@@ -34,7 +34,7 @@ class UserTesterTest {
     @Mock
     private MessageService messageService;
     @Captor
-    ArgumentCaptor<String> stringCaptor;
+    private ArgumentCaptor<String> stringCaptor;
 
     @DisplayName("Спрашивает имя пользователя")
     @Test()
