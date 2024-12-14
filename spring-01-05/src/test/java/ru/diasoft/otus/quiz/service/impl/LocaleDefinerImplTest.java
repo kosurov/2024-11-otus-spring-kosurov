@@ -9,8 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.diasoft.otus.quiz.service.InputOutputService;
+import ru.diasoft.otus.quiz.service.LocaleHolder;
 import ru.diasoft.otus.quiz.service.MessageService;
-import ru.diasoft.otus.quiz.service.ResourceManager;
 
 import java.util.Locale;
 
@@ -28,7 +28,7 @@ class LocaleDefinerImplTest {
     @Mock
     private InputOutputService inputOutputService;
     @Mock
-    private ResourceManager resourceManager;
+    private LocaleHolder localeHolder;
     @Mock
     private MessageService messageService;
     @Captor
@@ -40,16 +40,16 @@ class LocaleDefinerImplTest {
         Locale ruLocale = Locale.forLanguageTag("ru-RU");
         when(inputOutputService.readString()).thenReturn("ru");
         localeDefiner.defineLocale();
-        verify(resourceManager).setLocale(ruLocale);
+        verify(localeHolder).setLocale(ruLocale);
     }
 
-    @DisplayName("Определяет локаль en-EN")
+    @DisplayName("Определяет локаль en-US")
     @Test
     void defineLocale_definesEnLocale() {
-        Locale ruLocale = Locale.forLanguageTag("en-EN");
+        Locale ruLocale = Locale.forLanguageTag("en-US");
         when(inputOutputService.readString()).thenReturn("en");
         localeDefiner.defineLocale();
-        verify(resourceManager).setLocale(ruLocale);
+        verify(localeHolder).setLocale(ruLocale);
     }
 
     @DisplayName("Просит пользователя выбрать язык")

@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
-import ru.diasoft.otus.quiz.service.ResourceManager;
+import ru.diasoft.otus.quiz.service.LocaleHolder;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -22,7 +22,7 @@ class MessageServiceImplTest {
     @Mock
     private MessageSource messageSource;
     @Mock
-    private ResourceManager resourceManager;
+    private LocaleHolder localeHolder;
 
     @DisplayName("Вызывает MessageSource для получения локализованного сообщения")
     @Test
@@ -35,6 +35,6 @@ class MessageServiceImplTest {
     @Test
     void getMessage_callResourceManager() {
         messageService.getMessage("code", "arsg");
-        verify(resourceManager).getLocale();
+        verify(localeHolder).getLocale();
     }
 }

@@ -7,13 +7,13 @@ quiz:
 
 resource:
   questions:
-    - locale: en-EN
+    - locale: en-US
       file-name: questions.csv
     - locale: ru-RU
-      file-name: questions_ru_RU.csv
+      file-name: questions_ru.csv
   answers:
-    - locale: en-EN
+    - locale: en-US
       file-name: answers.csv
     - locale: ru-RU
-      file-name: answers_ru_RU.csv
-  default-locale: en-EN
+      file-name: answers_ru.csv
+  default-locale: en-US

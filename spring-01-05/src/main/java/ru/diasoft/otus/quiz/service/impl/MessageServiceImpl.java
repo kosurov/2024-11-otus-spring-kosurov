@@ -2,23 +2,23 @@ package ru.diasoft.otus.quiz.service.impl;
 
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import ru.diasoft.otus.quiz.service.LocaleHolder;
 import ru.diasoft.otus.quiz.service.MessageService;
-import ru.diasoft.otus.quiz.service.ResourceManager;
 
 @Service
 public class MessageServiceImpl implements MessageService {
 
     private final MessageSource messageSource;
-    private final ResourceManager resourceManager;
+    private final LocaleHolder localeHolder;
 
     public MessageServiceImpl(MessageSource messageSource,
-                              ResourceManager resourceManager) {
+                              LocaleHolder localeHolder) {
         this.messageSource = messageSource;
-        this.resourceManager = resourceManager;
+        this.localeHolder = localeHolder;
     }
 
     @Override
     public String getMessage(String code, Object... args) {
-        return messageSource.getMessage(code, args, resourceManager.getLocale());
+        return messageSource.getMessage(code, args, localeHolder.getLocale());
     }
 }
