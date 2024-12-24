@@ -1,6 +1,7 @@
 package ru.diasoft.otus.quiz.service.impl;
 
 import org.springframework.stereotype.Component;
+import ru.diasoft.otus.quiz.exception.UnsupportedLanguageException;
 import ru.diasoft.otus.quiz.service.InputOutputService;
 import ru.diasoft.otus.quiz.service.LocaleDefiner;
 import ru.diasoft.otus.quiz.service.LocaleHolder;
@@ -13,30 +14,25 @@ import java.util.Map;
 @Component
 public class LocaleDefinerImpl implements LocaleDefiner {
 
-    private final InputOutputService inputOutputService;
     private final LocaleHolder localeHolder;
     private final MessageService messageService;
 
-    public LocaleDefinerImpl(InputOutputService inputOutputService,
-                             LocaleHolder localeHolder,
+    public LocaleDefinerImpl(LocaleHolder localeHolder,
                              MessageService messageService) {
-        this.inputOutputService = inputOutputService;
         this.localeHolder = localeHolder;
         this.messageService = messageService;
     }
 
     @Override
-    public void defineLocale() {
+    public void defineLocale(String language) {
         Map<String, Locale> locales = new HashMap<>();
         locales.put("ru", Locale.forLanguageTag("ru-RU"));
         locales.put("en", Locale.US);
 
-        inputOutputService.out(messageService.getMessage("out.choose.language"));
-        String userInput = inputOutputService.readString();
-        while (!"en".equals(userInput) && !"ru".equals(userInput)) {
-            inputOutputService.out(messageService.getMessage("out.retry.choose.language"));
-            userInput = inputOutputService.readString();
+        Locale locale = locales.get(language);
+        if (locale == null) {
+            throw new UnsupportedLanguageException(messageService.getMessage("out.supported.languages"));
         }
-        localeHolder.setLocale(locales.get(userInput));
+        localeHolder.setLocale(locales.get(language));
     }
 }

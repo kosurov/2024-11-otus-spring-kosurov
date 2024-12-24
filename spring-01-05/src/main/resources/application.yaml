@@ -1,6 +1,9 @@
 spring:
   application:
     name: spring-01-05
+  shell:
+    interactive:
+      enabled: true
 
 quiz:
   correct-answers-percent-to-pass: 60
