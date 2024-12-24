@@ -1,48 +1,50 @@
 package ru.otus.quiz.service.impl;
 
-import java.io.Closeable;
+import org.springframework.stereotype.Service;
+import ru.otus.quiz.service.InputOutputService;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
-public class ConsoleTester implements Closeable {
+@Service
+public class UserTester {
 
-    private final Scanner scanner;
+    private final InputOutputService inputOutputService;
     private String username;
     private int correctAnswers;
     private int questionsCount;
 
-    public ConsoleTester(Scanner scanner) {
-        this.scanner = scanner;
+    public UserTester(InputOutputService inputOutputService) {
+        this.inputOutputService = inputOutputService;
     }
 
     public void greetUser() {
-        System.out.println("Please enter your first name:");
-        String firstName = scanner.nextLine();
-        System.out.println("Please enter your last name:");
-        String lastName = scanner.nextLine();
+        inputOutputService.out("Please enter your first name:");
+        String firstName = inputOutputService.readString();
+        inputOutputService.out("Please enter your last name:");
+        String lastName = inputOutputService.readString();
         username = firstName + " " + lastName;
-        System.out.println("Nice to meet you " + username + "!");
-        System.out.println("Welcome to Quiz Service 2000!");
+        inputOutputService.out("Nice to meet you " + username + "!");
+        inputOutputService.out("Welcome to Quiz Service 2000!");
     }
 
     public boolean askForReadiness() {
-        System.out.println("Are you ready to start the quiz? (yes/no)");
-        String answer = scanner.nextLine();
+        inputOutputService.out("Are you ready to start the quiz? (yes/no)");
+        String answer = inputOutputService.readString();
         while (!"yes".equals(answer) && !"no".equals(answer)) {
-            System.out.println("Please enter 'yes' or 'no'");
-            answer = scanner.nextLine();
+            inputOutputService.out("Please enter 'yes' or 'no'");
+            answer = inputOutputService.readString();
         }
         return "yes".equals(answer);
     }
 
     public String ask(String question, List<String> answers) {
         Map<Character, String> answerOutput = getAnswerOutput(answers);
-        System.out.println(question);
+        inputOutputService.out(question);
         printAnswerOutput(answerOutput);
         questionsCount++;
-        String userInput = scanner.nextLine();
+        String userInput = inputOutputService.readString();
         return getAnswerFromUserInput(userInput, answerOutput);
     }
 
@@ -50,23 +52,26 @@ public class ConsoleTester implements Closeable {
         correctAnswers++;
     }
 
-    public int getCorrectAnswersPercent() {
-        return correctAnswers * 100 / questionsCount;
+    public int getCorrectAnswers() {
+        return correctAnswers;
+    }
+
+    public int getQuestionsCount() {
+        return questionsCount;
     }
 
     public void printFaultResult() {
-        System.out.println("Sorry, " + username + ". The quiz has been failed, please try again later.");
+        inputOutputService.out("Sorry, " + username + ". The quiz has been failed, please try again later.");
         printStatistic();
     }
 
     public void printSuccessResult() {
-        System.out.println("Congratulations, " + username + "! You have successfully completed the quiz!");
+        inputOutputService.out("Congratulations, " + username + "! You have successfully completed the quiz!");
         printStatistic();
     }
 
-    @Override
-    public void close() {
-        this.scanner.close();
+    public void printInternalError(String message) {
+        inputOutputService.out("Error occurred while running program: " + message);
     }
 
     private Map<Character, String> getAnswerOutput(List<String> answers) {
@@ -95,12 +100,11 @@ public class ConsoleTester implements Closeable {
 
     private void printAnswerOutput(Map<Character, String> answerOutput) {
         if (hasAnswersOptions(answerOutput)) {
-            answerOutput.forEach((key, value) -> System.out.println(key + ") " + value));
+            answerOutput.forEach((key, value) -> inputOutputService.out(key + ") " + value));
         }
     }
 
     private void printStatistic() {
-        System.out.println("You have " + correctAnswers + " out of " + questionsCount + " correct answers.");
+        inputOutputService.out("You have " + correctAnswers + " out of " + questionsCount + " correct answers.");
     }
-
 }
