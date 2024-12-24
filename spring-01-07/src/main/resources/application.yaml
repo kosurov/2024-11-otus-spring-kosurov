@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: spring-01-05
+  shell:
+    interactive:
+      enabled: true
+
+quiz:
+  correct-answers-percent-to-pass: 60
+
+resource:
+  questions:
+    - locale: en-US
+      file-name: questions.csv
+    - locale: ru-RU
+      file-name: questions_ru.csv
+  answers:
+    - locale: en-US
+      file-name: answers.csv
+    - locale: ru-RU
+      file-name: answers_ru.csv
+  default-locale: en-US
